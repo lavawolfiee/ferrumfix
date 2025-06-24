@@ -25,6 +25,7 @@ pub fn derive_fix_value(input: TokenStream) -> TokenStream {
         .expect("Invalid enum");
     let deserialize_matching_cases = darling_context
         .data
+        .clone()
         .map_enum_variants(|enum_variant| {
             let enum_discriminant = enum_variant.variant.as_str();
             let enum_variant = enum_variant.ident;
@@ -32,6 +33,20 @@ pub fn derive_fix_value(input: TokenStream) -> TokenStream {
                 TokenTree::from(Literal::byte_string(enum_discriminant.as_bytes())).into();
             quote! {
                 #bstring => Ok(Self::#enum_variant)
+            }
+        })
+        .take_enum()
+        .expect("Invalid enum");
+    let as_bytes_cases = darling_context
+        .data
+        .clone()
+        .map_enum_variants(|enum_variant| {
+            let enum_discriminant = enum_variant.variant.as_str();
+            let enum_variant_ident = enum_variant.ident;
+            let bstring: proc_macro2::TokenStream =
+                TokenTree::from(Literal::byte_string(enum_discriminant.as_bytes())).into();
+            quote! {
+                Self::#enum_variant_ident => #bstring,
             }
         })
         .take_enum()
@@ -60,6 +75,23 @@ pub fn derive_fix_value(input: TokenStream) -> TokenStream {
                     #(#deserialize_matching_cases),*,
                     _ => ::std::result::Result::Err(())
                 }
+            }
+        }
+
+        // --- Zero-allocation helpers automatically added for every enum ---
+        impl #identifier {
+            #[inline]
+            pub const fn as_bytes(&self) -> &'static [u8] {
+                match self {
+                    #(#as_bytes_cases)*
+                }
+            }
+        }
+
+        impl ::core::convert::AsRef<[u8]> for #identifier {
+            #[inline]
+            fn as_ref(&self) -> &[u8] {
+                self.as_bytes()
             }
         }
     };

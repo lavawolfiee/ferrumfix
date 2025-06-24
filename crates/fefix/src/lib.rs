@@ -19,7 +19,7 @@
 //!  maintains great performance.
 //!  - **Fast**. Everything is planned around zero-copy and zero-allocations in
 //!  the hot paths.
-//!  
+//!
 //! Please check out the [README](https://github.com/neysofu/fefix/) for more
 //! general information regarding FerrumFIX.
 //!
@@ -66,12 +66,12 @@
 //!
 //! # FAQ
 //!
-//! - **Q.** I simply want to read FIX messages. Where do I start?  
+//! - **Q.** I simply want to read FIX messages. Where do I start?
 //!   **A.** Use [`fefix::tagvalue::Decoder`](crate::tagvalue::Decoder) and
 //!   [`fefix::tagvalue::DecoderStreaming`](crate::tagvalue::DecoderStreaming).
 //!   The former is for individual messages, the latter is for streams.
 //!
-//! - **Q.** What about `serde` integration?  
+//! - **Q.** What about `serde` integration?
 //!   **A.** FIX semantics don't map well to `serde` and there are subtle
 //!   performance implications. It's not a good idea.
 //!
