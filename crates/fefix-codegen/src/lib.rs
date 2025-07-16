@@ -291,7 +291,8 @@ fn gen_field_definition_with_hashsets(
                 tag: {tag},
                 data_type: FixDatatype::{data_type},
                 location: FieldLocation::{field_location},
-            }};"#,
+            }};
+            pub const {identifier}_TAG: u32 = {tag};"#,
         doc = doc,
         identifier = name,
         name = field.name(),
